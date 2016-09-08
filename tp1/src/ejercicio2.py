@@ -16,48 +16,23 @@ def insertOrIncrement(dic, key):
     else:
         dic[key] = 1
 
-def process(pkt):
+def ej2(packets):
 
-    global cant_paquetes_map
-    global timeout
-    global cant_paquetes
-
-    # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
-    # Aca estamos contando la cantidad de apariciones de cada nodo, tenemos que definir bien
-    # que data queremos guardar y que significa para nosotros un nodo distinguido
-    if TYPE_FIELD in pkt.fields:
-        type_str = str(hex(pkt.fields[TYPE_FIELD]))
-        if(type_str == TYPE_ARP):
-            pkt.show()
-            insertOrIncrement(cant_paquetes_map, pkt.psrc)
-            insertOrIncrement(cant_paquetes_map, pkt.pdst)
-
-    if timeout != None:
-        cant_paquetes += 1
-
-
-
-if __name__ == '__main__':
-    
     cant_paquetes_map = {}
     entropia_s = 0
 
-    # Tiempo que se realiza el sniff en caso de realizarlo por timeout
-    timeout = None
-    # Cantidad de paquetes que procesa el sniff en caso de realizarlo por cantidad de paquetes
-    cant_paquetes = 0
+    for pkt in packets:
+        # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
+        # Aca estamos contando la cantidad de apariciones de cada nodo, tenemos que definir bien
+        # que data queremos guardar y que significa para nosotros un nodo distinguido
+        if TYPE_FIELD in pkt.fields:
+            type_str = str(hex(pkt.fields[TYPE_FIELD]))
+            if(type_str == TYPE_ARP):
+                pkt.pdst.show()
+                #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
+                insertOrIncrement(cant_paquetes_map, pkt.pdst)
 
-
-    # Parseo de parametros para determinar corte del sniff
-    if len(sys.argv) == 3:
-        if sys.argv[1] == 'timeout':
-            timeout = int(sys.argv[2])
-        elif sys.argv[1] == 'cant_paquetes':
-            cant_paquetes = int(sys.argv[2])
-
-    # Se realiza el sniff
-    sniff(prn=process, store=0, count=cant_paquetes, timeout=timeout)
-
+    cant_paquetes = sum(cant_paquetes_map.values())
 
     # Imprimimos algunos valores de la fuente
     for dst, cantidad in cant_paquetes_map.iteritems():
@@ -68,7 +43,7 @@ if __name__ == '__main__':
         probabilidad = float(cantidad) / cant_paquetes
         print "probabilidad: " + str(probabilidad)
         
-        informacion = sys.maxint if (probabilidad == 0) else (-log(probabilidad,2))
+        informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
         print "informacion: " + str(informacion)
 
         entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
