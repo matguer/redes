@@ -12,14 +12,25 @@ def ej1(packets):
     
     cant_paquetes_map = {UNICAST: 0, BROADCAST: 0}
     entropia_s = 0
+    cant_paquetes = 0
 
     for pkt in packets:
-        if(pkt.dst == BROADCAST_DST):
-            cant_paquetes_map[BROADCAST] += 1
-        else:
-            cant_paquetes_map[UNICAST] += 1
+        try:    
+            if(pkt.addr1 == BROADCAST_DST):
+                cant_paquetes_map[BROADCAST] += 1
+            else:
+                cant_paquetes_map[UNICAST] += 1
+            cant_paquetes += 1
+        except:
+            try:
+                if(pkt.dst == BROADCAST_DST):
+                    cant_paquetes_map[BROADCAST] += 1
+                else:
+                    cant_paquetes_map[UNICAST] += 1
+                cant_paquetes += 1
+            except:
+                pkt.show()
 
-    cant_paquetes = sum(cant_paquetes_map.values())
 
     # Imprimimos algunos valores de la fuente
     for dst, cantidad in cant_paquetes_map.iteritems():
