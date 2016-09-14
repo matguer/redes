@@ -28,7 +28,7 @@ def ej2(packets):
         if TYPE_FIELD in pkt.fields:
             type_str = str(hex(pkt.fields[TYPE_FIELD]))
             if(type_str == TYPE_ARP):
-                pkt.pdst.show()
+                pkt.show()
                 #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
                 insertOrIncrement(cant_paquetes_map, pkt.pdst)
 
