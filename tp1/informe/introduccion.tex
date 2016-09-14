@@ -1,3 +1,33 @@
 \section{Introducci\'on}
 
-Descripci\'on del problema y de lo que vamos a hacer...
+\subsection{Información}
+
+\par La \textbf{información} de un evento aleatorio $e$ con probabilidad $P(e)$ está dada por:
+
+\begin{equation*}
+    I(e) := -log_b(P(e))
+\end{equation*}
+
+para una cierta base $b$. 
+La elección de dicha base determina la unidad de la información; en este trabajo nos limitaremos a base 2, por lo que la unidad que manejaremos son los \textit{bits}. 
+
+\par La \textbf{entropía} de una variable aleatoria $A$ es la esperanza de la información de $A$, y está dada por:
+
+\begin{equation*}
+    H(A) := \sum_{a \in A}{P(a) * I(a)} = - \sum_{a \in A}{P(a) * log(P(a))}
+\end{equation*}
+
+\par Una \textbf{fuente} emite mensajes con ciertas probabilidades.
+Una \textbf{fuente de memoria nula} es una en la cual la probabilidad de cada mensaje no depende de los mensajes previos; viendo cada mensaje como una variable aleatoria, esto equivale a que sean independientes.
+Adicionalmente, si la probabilidad de cada mensaje es constante en el tiempo\footnote{A partir de ahora, asumiremos que lo es.}, estas variables además son idénticamente distribuidas.
+
+\par La entropía de una fuente de memoria nula es la entropía de cada mensaje, que equivale a la información esperada de cada mensaje.
+
+\subsection{Capa de enlace y ARP}
+
+\par Una MAC address es un identificador único para una interfaz utilizada en la capa de enlace.
+
+\par Un frame de una red Ethernet puede ser transmitido de forma \textit{unicast}, es decir para sólo un receptor\footnote{Debido a la naturaleza de Ethernet, se transmite a toda la red, pero los otros receptores normalmente descartarán los frames que no les son destinados.}, especificando como destino su MAC address; o de forma \textit{broadcast}, es decir para todos los dispositivos de la red, marcando como desinto la MAC address FF:FF:FF:FF:FF:FF.
+
+\par En la capa de red se emplea un identificador único denominado dirección de IP.
+Para relacionar una de estas direcciones con una MAC address, se emplea el protocolo ARP (\textit{Address Resolution Protocol}).
