@@ -35,8 +35,8 @@ def ej1(packets):
         print "probabilidad: " + str(probabilidad)
         
         informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
-        print "informacion: " + str(informacion)
+        print "informacion: " + str(informacion) + " bits"
 
         entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
 
-    print "\nentropia_s: " + str(entropia_s)
+    print "\nentropia_s: " + str(entropia_s) + " bits"

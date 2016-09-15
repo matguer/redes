@@ -9,6 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("ej", type = int, choices = [1, 2], help = "Numero del ejercicio a realizar.")
 parser.add_argument("modo", choices = ["sniff", "pcap"], help = "Modo de uso: sniff o levante de pcap ya existente.")
 parser.add_argument("pcapFile", nargs = "?", default = "default.pcap", help = "Archivo pcap a escribir (para modo sniff) o leer (para modo pcap).")
+parser.add_argument("figuraFile", nargs = "?", default = "default_figura.pdf", help = "Nombre del archivo en el cual se guardara la figura. (Solo para ej == 2).")
 args = parser.parse_args()
 
 if (vars(args)["modo"] == "sniff"):
@@ -23,4 +24,4 @@ else:
 if (vars(args)["ej"] == 1):
     ejercicio1.ej1(packets) 
 else: 
-    ejercicio2.ej2(packets)
+    ejercicio2.ej2(packets, vars(args)["figuraFile"])

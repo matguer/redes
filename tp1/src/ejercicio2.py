@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 
-import sys
 from scapy.all import *
 from math import log
+#from grafo import grafo
+from graficar import graficar
 
 BROADCAST_DST = 'ff:ff:ff:ff:ff:ff'
 BROADCAST = 'broadcast'
@@ -16,10 +17,9 @@ def insertOrIncrement(dic, key):
     else:
         dic[key] = 1
 
-def ej2(packets):
+def ej2(packets, figuraFile):
 
-    cant_paquetes_map = {}
-    entropia_s = 0
+    paquetes_map = {}
     cant_paquetes = 0
 
     for pkt in packets:
@@ -29,24 +29,25 @@ def ej2(packets):
         if TYPE_FIELD in pkt.fields:
             type_str = str(hex(pkt.fields[TYPE_FIELD]))
             if(type_str == TYPE_ARP):
-                pkt.show()
                 #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
-                insertOrIncrement(cant_paquetes_map, pkt.pdst)
+                paquetes_map.setdefault(pkt.pdst, []).append(pkt.src)
                 cant_paquetes += 1
 
+    entropia_s = 0
+    info = {}
+    for dst, listaSrc in paquetes_map.iteritems():
 
-    # Imprimimos algunos valores de la fuente
-    for dst, cantidad in cant_paquetes_map.iteritems():
-        print "\n" + dst + ":\n"
-
-        print "cantidad de paquetes: " + str(cantidad)
-
+        cantidad = len(listaSrc)
         probabilidad = float(cantidad) / cant_paquetes
-        print "probabilidad: " + str(probabilidad)
-        
         informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
-        print "informacion: " + str(informacion)
-
+        info[dst] = informacion
         entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
 
-    print "entropia_s: " + str(entropia_s)
+        #print "\n" + dst + ":\n"
+        #print "cantidad de paquetes: " + str(cantidad)
+        #print "probabilidad: " + str(probabilidad)
+        #print "informacion: " + str(informacion) + " bits"
+    #print "entropia_s: " + str(entropia_s) + " bits"
+
+    #grafo(paquetes_map, grafoFile)
+    graficar(info, entropia_s, figuraFile)
