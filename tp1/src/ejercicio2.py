@@ -20,6 +20,7 @@ def ej2(packets):
 
     cant_paquetes_map = {}
     entropia_s = 0
+    cant_paquetes = 0
 
     for pkt in packets:
         # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
@@ -31,8 +32,8 @@ def ej2(packets):
                 pkt.show()
                 #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
                 insertOrIncrement(cant_paquetes_map, pkt.pdst)
+                cant_paquetes += 1
 
-    cant_paquetes = sum(cant_paquetes_map.values())
 
     # Imprimimos algunos valores de la fuente
     for dst, cantidad in cant_paquetes_map.iteritems():

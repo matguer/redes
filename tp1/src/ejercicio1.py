@@ -15,21 +15,14 @@ def ej1(packets):
     cant_paquetes = 0
 
     for pkt in packets:
-        try:    
-            if(pkt.addr1 == BROADCAST_DST):
+        try:
+            if(pkt.dst == BROADCAST_DST):
                 cant_paquetes_map[BROADCAST] += 1
             else:
                 cant_paquetes_map[UNICAST] += 1
             cant_paquetes += 1
         except:
-            try:
-                if(pkt.dst == BROADCAST_DST):
-                    cant_paquetes_map[BROADCAST] += 1
-                else:
-                    cant_paquetes_map[UNICAST] += 1
-                cant_paquetes += 1
-            except:
-                pkt.show()
+            pkt.show()
 
 
     # Imprimimos algunos valores de la fuente
