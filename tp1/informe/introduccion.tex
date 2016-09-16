@@ -25,9 +25,26 @@ Adicionalmente, si la probabilidad de cada mensaje es constante en el tiempo\foo
 
 \subsection{Capa de enlace y ARP}
 
-\par Una MAC address es un identificador único para una interfaz utilizada en la capa de enlace.
+\par En la mayoría de los protocolos de la capa de enlace se emplean identificadores únicos; en el caso de Ethernet (802.3) y WLAN (802.11), este identificador lleva el nombre de MAC (\textit{Media Access Control}) address.
 
 \par Un frame de una red Ethernet puede ser transmitido de forma \textit{unicast}, es decir para sólo un receptor\footnote{Debido a la naturaleza de Ethernet, se transmite a toda la red, pero los otros receptores normalmente descartarán los frames que no les son destinados.}, especificando como destino su MAC address; o de forma \textit{broadcast}, es decir para todos los dispositivos de la red, marcando como desinto la MAC address FF:FF:FF:FF:FF:FF.
 
-\par En la capa de red se emplea un identificador único denominado dirección de IP.
-Para relacionar una de estas direcciones con una MAC address, se emplea el protocolo ARP (\textit{Address Resolution Protocol}).
+\par También es ubicuo el uso de los identificadores únicos en la capa de red; para el protocolo más común (IP), se utilizan Direcciones IP.
+
+\par Para relacionar un identificador de capa de red con uno de capa de enlace\footnote{En nuestro caso, Direcciones IP y MAC addresses, respecitvamente. De aquí en adelante utilizaremos estos términos al referirnos a ARP.}, se emplea el protocolo ARP (\textit{Address Resolution Protocol}).
+En la figura \ref{ARPpacket} se puede ver la estructura de un paquete ARP.
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/ARPpacket}
+    \caption{Estructura de un paquete ARP.}\label{ARPpacket}
+\end{figure*}
+
+\par Para encontrar la MAC address correspondiente a una Dirección IP conocida, un dispositivo envía un paquete a la red de forma \textit{broadcast}.
+Marca en 1 el campo Operation (\textit{who-has}), anota su Dirección IP y su MAC address en los campos \textit{Sender's Protocol Address} y \textit{Sender's Hardware Address}, respectivamente, y escribe la Dirección IP deseada en el field \textit{Target Protocol Address}.
+
+\par Cuando un dispositivo recibe el paquete e identifica a su propia Dirección IP como la \textit{Target Protocol Address}, responde enviando otro paquete ARP al emisor original.
+En este caso, el campo Operation se settea en 2 (\textit{is-at}).
+Ambos campos de \textit{Sender's Address} nuevamente se completan con sus direcciones, mientras que los de \textit{Target Address}, con las direcciones provistas por el emisor en el paquete \textit{who-has} original.
+
+\par Cabe destacar que un paquete \textit{who-has} debe ser enviado de forma \textit{broadcast} (ya que la MAC address del receptor es desconocida), mientras que uno \textit{is-at} se transmite de forma \textit{unicast}, pues el emisor original envió su MAC address en el request original.
