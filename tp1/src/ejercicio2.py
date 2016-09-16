@@ -2,7 +2,7 @@
 
 from scapy.all import *
 from math import log
-#from grafo import grafo
+from grafo import grafo
 from graficar import graficar
 
 BROADCAST_DST = 'ff:ff:ff:ff:ff:ff'
@@ -10,30 +10,29 @@ BROADCAST = 'broadcast'
 UNICAST = 'unicast'
 TYPE_FIELD = 'type'
 TYPE_ARP = '0x806'
+WHO_HAS = 1
 
-def insertOrIncrement(dic, key):
-    if key in dic:
-        dic[key] += 1
-    else:
-        dic[key] = 1
-
-def ej2(packets, figuraFile):
+def ej2(packets, figuraFile, grafoFile):
 
     paquetes_map = {}
+    paquetes_map_inv = {}
     cant_paquetes = 0
 
     for pkt in packets:
         # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
-        # Aca estamos contando la cantidad de apariciones de cada nodo, tenemos que definir bien
-        # que data queremos guardar y que significa para nosotros un nodo distinguido
         if TYPE_FIELD in pkt.fields:
             type_str = str(hex(pkt.fields[TYPE_FIELD]))
-            if(type_str == TYPE_ARP):
-                #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
-                paquetes_map.setdefault(pkt.pdst, []).append(pkt.src)
-                cant_paquetes += 1
+            if(type_str == TYPE_ARP and pkt.op == WHO_HAS):
+                if ((pkt.psrc not in paquetes_map) or (pkt.pdst not in paquetes_map.get(pkt.psrc))):
+                    paquetes_map.setdefault(pkt.psrc, []).append(pkt.pdst)
+                    if (paquetes_map_inv.get(pkt.pdst) is None):
+                        paquetes_map_inv[pkt.pdst] = 0
+                    paquetes_map_inv[pkt.pdst] += 1
+                    cant_paquetes += 1
 
-    entropia_s = 0
+    #hay que arreglar esto, al descartar paquetes repeditos caes en problemas a la hora de hacer
+    #la fuente me parece
+    entropia_s = 1
     info = {}
     for dst, listaSrc in paquetes_map.iteritems():
 
@@ -43,11 +42,31 @@ def ej2(packets, figuraFile):
         info[dst] = informacion
         entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
 
-        #print "\n" + dst + ":\n"
-        #print "cantidad de paquetes: " + str(cantidad)
-        #print "probabilidad: " + str(probabilidad)
-        #print "informacion: " + str(informacion) + " bits"
-    #print "entropia_s: " + str(entropia_s) + " bits"
+    paquetes_map_nuevo = {}
+    for src in paquetes_map.iterkeys():
+        paquetes_map_nuevo[src] = []
+        listaNueva = filter(lambda s: paquetes_map_inv[s] > 1, paquetes_map[src])
+        unicoSrc = filter(lambda s: paquetes_map_inv[s] <= 1, paquetes_map[src])
+        if (len(unicoSrc) > 1):
+            listaNueva.append(unicoSrc[0] + "+" + str(len(unicoSrc) - 1))
+        elif unicoSrc:
+            listaNueva.append(unicoSrc[0])
+        paquetes_map_nuevo[src] = listaNueva
+    paquetes_map = paquetes_map_nuevo
 
-    #grafo(paquetes_map, grafoFile)
+    paquetes_map_nuevo = {}
+    bitmap = {k: False for k in paquetes_map.iterkeys()}
+    for (k, v) in paquetes_map.iteritems():
+        if (bitmap[k] == False):
+            count = 0
+            bitmap[k] = True
+            for (kPrima, vPrima) in paquetes_map.iteritems():
+                if (bitmap[kPrima] == False) and (k != kPrima) and (v == vPrima):
+                    bitmap[kPrima] = True
+                    count += 1
+
+            paquetes_map_nuevo[k + "+" + str(count) if count > 0 else k] = v
+    paquetes_map = paquetes_map_nuevo
+
     graficar(info, entropia_s, figuraFile)
+    grafo(paquetes_map, grafoFile)
