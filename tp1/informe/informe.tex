@@ -1,4 +1,4 @@
-\documentclass[spanish, 10pt,a4paper, twocolumn]{article}
+\documentclass[spanish, 10pt,a4paper, twocolumn, hidelinks]{article}
 \usepackage[spanish]{babel}
 \usepackage[utf8]{inputenc}
 
@@ -49,15 +49,13 @@
 \cfoot{}
 
 
-\input{caratula.tex} 
 \begin{document}
 { \oddsidemargin = 2em
 	\headheight = -20pt
-	\maketitle
+        \input{caratula.tex}
 }
 
-\tableofcontents
-
+\clearpage
 \newpage
 \input{introduccion.tex}
 

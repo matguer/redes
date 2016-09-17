@@ -17,6 +17,9 @@ La elección de dicha base determina la unidad de la información; en este traba
     H(A) := \sum_{a \in A}{P(a) * I(a)} = - \sum_{a \in A}{P(a) * log(P(a))}
 \end{equation*}
 
+\par La entropía máxima de una variable aleatoria se da cuando los eventos son equiprobables.
+En particular, para una variable Bernoulli\footnote{Es decir, una que admite sólo dos eventos posibles.} equiprobable, la máxima entropía es de 1 bit.
+
 \par Una \textbf{fuente} emite mensajes con ciertas probabilidades.
 Una \textbf{fuente de memoria nula} es una en la cual la probabilidad de cada mensaje no depende de los mensajes previos; viendo cada mensaje como una variable aleatoria, esto equivale a que sean independientes.
 Adicionalmente, si la probabilidad de cada mensaje es constante en el tiempo\footnote{A partir de ahora, asumiremos que lo es.}, estas variables además son idénticamente distribuidas.
@@ -28,6 +31,8 @@ Adicionalmente, si la probabilidad de cada mensaje es constante en el tiempo\foo
 \par En la mayoría de los protocolos de la capa de enlace se emplean identificadores únicos; en el caso de Ethernet (802.3) y WLAN (802.11), este identificador lleva el nombre de MAC (\textit{Media Access Control}) address.
 
 \par Un frame de una red Ethernet puede ser transmitido de forma \textit{unicast}, es decir para sólo un receptor\footnote{Debido a la naturaleza de Ethernet, se transmite a toda la red, pero los otros receptores normalmente descartarán los frames que no les son destinados.}, especificando como destino su MAC address; o de forma \textit{broadcast}, es decir para todos los dispositivos de la red, marcando como desinto la MAC address FF:FF:FF:FF:FF:FF.
+
+\par Generalmente, la transmisión \textit{broadcast} se emplea para protocolos de control (por ejemplo ARP o detección de colisiones en Ethernet), mientras que la \textit{unicast} podrá enviar datos\footnote{También podrá ser utilizada por algunos protocolos de control, por ejemplo ARP, como se detallará a continuación.}.
 
 \par También es ubicuo el uso de los identificadores únicos en la capa de red; para el protocolo más común (IP), se utilizan Direcciones IP.
 

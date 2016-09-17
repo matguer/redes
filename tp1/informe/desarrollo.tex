@@ -1,8 +1,15 @@
 \section{Desarrollo}
 
-\subsection{Sobre la elección de la fuente $S_1$}
+\subsection{Fuente $S$}
 
-\par Se deben tomar diversas decisiones para poder definir la fuente $S_1$.
+\par Definiremos una fuente de memoria nula $S$ en base a los frames de capa de enlace capturados. 
+La fuente consiste en dos mensajes: un frame fue transmitido de forma \textit{broadcast}, o éste fue transmitido de forma \textit{unicast}.
+
+\subsection{Elección de la fuente $S_1$}
+
+\par Definiremos una fuente de memoria nula $S_1$ en base a las Direcciones IP de los paquetes ARP. 
+Deberemos tomar diversas decisiones para definirla correctamente para poder distinguir los nodos apropiados.
+
 \par En primer lugar: debemos elegir si tomar los paquetes \textit{who-has}, \textit{is-at}, o ambos.
 En la mayoría de los casos, un \textit{who-has} será respondido por exactamente un \textit{is-at} correspondiente, a menos que el receptor deseado no pueda recibir el paquete o emitir la respuesta, o que haya dos dispositivos con una misma MAC address que intenten responder a la vez.
 Por ende, la información del \textit{is-at} será redundante con la del \textit{who-has}, a menos que se produzca un error (lo que, de tomar ambos, agregaría errores a las mediciones).
@@ -18,9 +25,50 @@ Si bien esto no es ilógico desde el punto de vista del modelo de fuente de memo
 
 \par Creemos que por esta razón no deberíamos considerar paquetes repetidos, pero de todas formas juzgaremos ambos procedimientos en base a los resultados de los experimentos.
 
-\subsection{Experimento 1: red inalámbrica de los Laboratorios del DC}
+\par Los grafos que emplearemos para representar la red subyacente de mensajes ARP serán independientes de las elecciones que tomemos respecto de la fuente.
+En particular, éstos consistirán en digrafos con loops\footnote{Como mencionamos en la Introducción, en un \textit{gratuitous ARP}, $\text{\textit{Sender's Protocol Address}} = \text{\textit{Target Protocol Address}}$. Para poder observar este fenómeno en el grafo, permitiremos loops.}, donde hay un eje de un nodo a otro si el primero emite un \textit{who-has} preguntando por la Dirección IP del segundo. 
 
-Descripci\'on del experimiento y de las condiciones del experimento
+\subsection{Experimento 1: red inalámbrica de los laboratorios del DC}
+
+\par Para este experimento evaluamos la red inalámbrica de los laboratorios del DC.
+
+\subsubsection{Estructura de la red}
+
+\par En las figuras \ref{ARPDC-sinColapsar} y \ref{ARPDC} se pueden ver los grafos\footnote{Ambos grafos representan la misma red. Sin embargo, el tamaño del grafo \ref{ARPDC-sinColapsar} puede dificultar un análisis detallado, por lo que en la figura \ref{ARPDC} colapsamos ciertos nodos con iguales vecinos (que se muestran en rojo). Mantuvimos el grafo original ya que una mirada rápida ofrece más información concerniente a la topología de la red.} de la red subyacente de mensajes ARP.
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/ciudad_10_grafoSinColapsar.pdf}
+    \caption{Grafo de la red subyacente de mensajes ARP, sin colapsar nodos .}\label{ARPDC-sinColapsar}
+\end{figure*}
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/ciudad_10_grafo.pdf}
+    \caption{Grafo de la red subyacente de mensajes ARP, colapsando nodos.}\label{ARPDC}
+\end{figure*}
+
+\par Si bien estas figuras fueron creadas a partir de los paquetes ARP, que se relacionan más con la fuente $S_1$, nos dan una idea de la estructura de la red, lo que nos permitirá mejor comprender los resultados de la fuente $S$.
+
+\subsubsection{Fuente $S$}
+
+\par A continuación podemos ver la fuente $S$ propuesta modelada con los resultados del experimento: \\
+
+\begin{tabular}{ | c | c | c |}
+    \hline
+    Mensaje & Probabilidad & Información [bits] \\
+    \hline
+    \textit{Unicast} & 0.773 & 0.371 \\
+    \hline
+    \textit{Broadcast} & 0.227 & 2.141 \\
+    \hline
+\end{tabular} \\
+
+\par Entropía de la fuente: 0.772 bits
+
+\par La
+
+\subsubsection{Fuente $S_1$}
 
 Incluir por lo menos los siguientes gr\'aficos:
 
