@@ -1,6 +1,24 @@
 \section{Desarrollo}
 
-\subsection{Experimento 1}
+\subsection{Sobre la elección de la fuente $S_1$}
+
+\par Se deben tomar diversas decisiones para poder definir la fuente $S_1$.
+\par En primer lugar: debemos elegir si tomar los paquetes \textit{who-has}, \textit{is-at}, o ambos.
+En la mayoría de los casos, un \textit{who-has} será respondido por exactamente un \textit{is-at} correspondiente, a menos que el receptor deseado no pueda recibir el paquete o emitir la respuesta, o que haya dos dispositivos con una misma MAC address que intenten responder a la vez.
+Por ende, la información del \textit{is-at} será redundante con la del \textit{who-has}, a menos que se produzca un error (lo que, de tomar ambos, agregaría errores a las mediciones).
+
+\par Consecuentemente, tomaremos sólo uno.
+Ya que el \textit{who-has} se transmite de forma \textit{broadcast}, mientras que el \textit{is-at}, de forma \textit{unicast}\footnote{Si bien realizaremos las mediciones en modo promiscuo, la presencia de \textit{switches} puede evitar que veamos este tipo de paquetes si no están destinados a nuestro dispositivo, lo que generaría aún más errores en las mediciones.}, tomaremos el primero.
+
+\par En segundo lugar, debemos decidir si emplear el origen del \textit{who-has}, su destino, o ambos como el mensaje de la fuente.
+Esta decisión no la tomaremos de antemano, sino que observaremos los grafos resultantes de los experimentos y en base a ellos decidiremos cuál es la opción más acertada.
+
+\par En último lugar, debemos decidir si permitir mensajes repetidos\footnote{Es decir, si considerar repetidas veces múltiples paquetes ARP con igual origen y destino.}. 
+Si bien esto no es ilógico desde el punto de vista del modelo de fuente de memoria nula planteado, los paquetes ARP repetidos no deberían ser necesarios: una vez que se envía un \textit{who-has} por una cierta dirección IP, y éste es respondido por un \textit{is-at}, la relación entre esta dirección y la MAC address provista debería persistirse en una tabla del emisor; paquetes repetidos podrían ser síntomas de que el \textit{who-has} original no tuvo respuesta, por lo que otros posteriores fueron requeridos.
+
+\par Creemos que por esta razón no deberíamos considerar paquetes repetidos, pero de todas formas juzgaremos ambos procedimientos en base a los resultados de los experimentos.
+
+\subsection{Experimento 1: red inalámbrica de los Laboratorios del DC}
 
 Descripci\'on del experimiento y de las condiciones del experimento
 

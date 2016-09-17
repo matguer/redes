@@ -48,3 +48,7 @@ En este caso, el campo Operation se settea en 2 (\textit{is-at}).
 Ambos campos de \textit{Sender's Address} nuevamente se completan con sus direcciones, mientras que los de \textit{Target Address}, con las direcciones provistas por el emisor en el paquete \textit{who-has} original.
 
 \par Cabe destacar que un paquete \textit{who-has} debe ser enviado de forma \textit{broadcast} (ya que la MAC address del receptor es desconocida), mientras que uno \textit{is-at} se transmite de forma \textit{unicast}, pues el emisor original envió su MAC address en el request original.
+
+\par Adicionalmente, hay dos casos de uso especiales de ARP: \textit{ARP probing} y \textit{gratuitous ARP}.
+El primero se emplea para evitar colisiones en los identificadores de IP (específicamente en IPv4, la versión más común actualmente), y se destaca al señalar el campo \textit{Sender's Protocol Address} con todos 0\footnote{El valor específico es 0.0.0.0.}.
+El segundo se usa como anuncio, y en éste se marcan los campos de \textit{Sender's Protocol Address} y \textit{Target Protocol Address} con la dirección IP del dispositivo que realiza el anuncio. 
