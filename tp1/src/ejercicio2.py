@@ -16,6 +16,7 @@ def ej2(packets, figuraFile, grafoFile):
 
     paquetes_map = {}
     paquetes_map_inv = {}
+    map_cant_paquetes = {}
     cant_paquetes = 0
 
     for pkt in packets:
@@ -28,19 +29,19 @@ def ej2(packets, figuraFile, grafoFile):
                     if (paquetes_map_inv.get(pkt.pdst) is None):
                         paquetes_map_inv[pkt.pdst] = 0
                     paquetes_map_inv[pkt.pdst] += 1
+                    #
+                    if (map_cant_paquetes.get(pkt.psrc) is None):
+                        map_cant_paquetes[pkt.psrc] = 0
+                    map_cant_paquetes[pkt.psrc] += 1
                     cant_paquetes += 1
 
-    #hay que arreglar esto, al descartar paquetes repeditos caes en problemas a la hora de hacer
-    #la fuente me parece
-    entropia_s = 1
-    info = {}
-    for dst, listaSrc in paquetes_map.iteritems():
+    info, entropia_s = fuente(map_cant_paquetes, cant_paquetes)
+    paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
 
-        cantidad = len(listaSrc)
-        probabilidad = float(cantidad) / cant_paquetes
-        informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
-        info[dst] = informacion
-        entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
+    graficar(info, entropia_s, figuraFile)
+    grafo(paquetes_map, grafoFile)
+
+def filtrar(paquetes_map, paquetes_map_inv):
 
     paquetes_map_nuevo = {}
     for src in paquetes_map.iterkeys():
@@ -66,7 +67,24 @@ def ej2(packets, figuraFile, grafoFile):
                     count += 1
 
             paquetes_map_nuevo[k + "+" + str(count) if count > 0 else k] = v
-    paquetes_map = paquetes_map_nuevo
+    return paquetes_map_nuevo
 
-    graficar(info, entropia_s, figuraFile)
-    grafo(paquetes_map, grafoFile)
+def fuente(map_cant_paquetes, cant_paquetes):
+
+    entropia_s = 0
+    info = []
+    for src, cantidad in map_cant_paquetes.iteritems():
+
+        probabilidad = float(cantidad) / cant_paquetes
+        informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
+        info.append((src, informacion))
+        entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
+
+    info = sorted(info, key = lambda p: p[1], reverse = True)
+
+    for (src, informacion) in info:
+        print "Informacion (" + src + ") = " + str(informacion) + " bits." + ("[Distinguido]" if informacion < entropia_s else "")
+    print "Entropia (S_1) = " + str(entropia_s) + " bits."
+
+    info = zip(*info)[1]
+    return (info, entropia_s)

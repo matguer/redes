@@ -4,12 +4,10 @@ from pygraphviz import *
 
 def grafo(paquetes_map, grafoFile):
     red = AGraph(paquetes_map, directed = True)
-    print red.node_attr
+    red.graph_attr["overlap"] = "voronoi"
+    red.graph_attr["splines"] = "true"
     for node in red.iternodes():
         if "+" in node.get_name():
-            #node.attr["style"] = "filled"
-            #node.attr["fillcolor"] = "grey"
-            #node.attr["fontcolor"] = "white"
             node.attr["color"] = "red"
             node.attr["fontcolor"] = "red"
     red.layout()
