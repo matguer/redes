@@ -12,7 +12,7 @@ TYPE_FIELD = 'type'
 TYPE_ARP = '0x806'
 WHO_HAS = 1
 
-def ej2(packets, figuraFile, grafoFile):
+def ej2(packets, figuraFile, grafoFile, colapsar):
 
     paquetes_map = {}
     paquetes_map_inv = {}
@@ -36,7 +36,8 @@ def ej2(packets, figuraFile, grafoFile):
                     cant_paquetes += 1
 
     info, entropia_s = fuente(map_cant_paquetes, cant_paquetes)
-    paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
+    if (colapsar):
+        paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
 
     graficar(info, entropia_s, figuraFile)
     grafo(paquetes_map, grafoFile)

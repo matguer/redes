@@ -11,18 +11,19 @@ parser.add_argument("modo", choices = ["sniff", "pcap"], help = "Modo de uso: sn
 parser.add_argument("pcapFile", nargs = "?", default = "default.pcap", help = "Archivo pcap a escribir (para modo sniff) o leer (para modo pcap).")
 parser.add_argument("figuraFile", nargs = "?", default = "default_figura.pdf", help = "Nombre del archivo en el cual se guardara la figura. (Solo para ej == 2).")
 parser.add_argument("grafoFile", nargs = "?", default = "default_grafo.png", help = "Nombre del archivo en el cual se guardara el grafo. (Solo para ej == 2).")
+parser.add_argument("--colapsar", action = "store_true", help = "Determina si colapsar nodos en el grafo. (Solo para ej == 2).")
 args = parser.parse_args()
 
-if (vars(args)["modo"] == "sniff"):
+if (args.modo == "sniff"):
     try:
         packets = sniff()
     except KeyboardInterrupt:
         pass
-    wrpcap(vars(args)["pcapFile"], packets)
+    wrpcap(args.pcapFile, packets)
 else: 
-    packets = rdpcap(vars(args)["pcapFile"])
+    packets = rdpcap(args.pcapFile)
 
-if (vars(args)["ej"] == 1):
+if (args.ej == 1):
     ejercicio1.ej1(packets) 
 else: 
-    ejercicio2.ej2(packets, vars(args)["figuraFile"], vars(args)["grafoFile"])
+    ejercicio2.ej2(packets, args.figuraFile, args.grafoFile, args.colapsar)
