@@ -1,9 +1,10 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from scapy.all import *
 from math import log
 from grafo import grafo
-from graficar import graficar
+#from graficar import graficar
 
 BROADCAST_DST = 'ff:ff:ff:ff:ff:ff'
 BROADCAST = 'broadcast'
@@ -12,7 +13,7 @@ TYPE_FIELD = 'type'
 TYPE_ARP = '0x806'
 WHO_HAS = 1
 
-def ej2(packets, figuraFile, grafoFile, switches):
+def ej2(packets, args):
 
     paquetes_map = {}
     paquetes_map_inv = {}
@@ -28,16 +29,16 @@ def ej2(packets, figuraFile, grafoFile, switches):
                     if (paquetes_map_inv.get(pkt.pdst) is None):
                         paquetes_map_inv[pkt.pdst] = 0
                     paquetes_map_inv[pkt.pdst] += 1
-                    sumarCant(map_cant_paquetes, pkt, switches)
-                elif (switches["repetidos"]):
-                    sumarCant(map_cant_paquetes, pkt, switches)
+                    sumarCant(map_cant_paquetes, pkt, args)
+                elif (args.repetidos):
+                    sumarCant(map_cant_paquetes, pkt, args)
 
-    info, entropia_s = fuente(map_cant_paquetes)
-    if (switches["colapsar"]):
+    info, entropia_s = fuente(map_cant_paquetes, args)
+    if (args.colapsar):
         paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
 
-    graficar(info, entropia_s, figuraFile)
-    grafo(paquetes_map, grafoFile)
+    #graficar(info, entropia_s, args.figuraFile)
+    grafo(paquetes_map, args.grafoFile)
 
 def filtrar(paquetes_map, paquetes_map_inv):
 
@@ -67,7 +68,7 @@ def filtrar(paquetes_map, paquetes_map_inv):
             paquetes_map_nuevo[k + "+" + str(count) if count > 0 else k] = v
     return paquetes_map_nuevo
 
-def fuente(map_cant_paquetes):
+def fuente(map_cant_paquetes, args):
 
     entropia_s = 0
     info = []
@@ -82,18 +83,25 @@ def fuente(map_cant_paquetes):
     info = sorted(info, key = lambda p: p[1], reverse = True)
 
     for (src, informacion) in info:
-        print "Informacion (" + src + ") = " + str(informacion) + " bits." + ("[Distinguido]" if informacion < entropia_s else "")
-    print "Entropia (S_1) = " + str(entropia_s) + " bits."
+        if (args.tabla):
+            print src + " & " + str(informacion) + " & " + (u"Sí" if informacion < entropia_s else "No") + " \\\\"
+            print "\hline"
+        else:
+            print u"Información (" + src + ") = " + str(informacion) + " bits." + ("[Distinguido]" if informacion < entropia_s else "")
+    if (args.tabla):
+        print u"\par Entropía de la fuente: " + str(entropia_s) + u". Entropía máxima: " + str(log(len(map_cant_paquetes.keys()), 2)) + " bits."
+    else:
+        print u"Entropía (S_1) = " + str(entropia_s) + " bits."
 
     info = zip(*info)[1]
     return (info, entropia_s)
 
-def sumarCant(map_cant_paquetes, pkt, switches):
+def sumarCant(map_cant_paquetes, pkt, args):
     if (pkt.psrc != pkt.pdst):
         if (map_cant_paquetes.get(pkt.psrc) is None):
             map_cant_paquetes[pkt.psrc] = 0
         map_cant_paquetes[pkt.psrc] += 1
-        if (switches["ambos"]):
+        if (args.ambos):
             if (map_cant_paquetes.get(pkt.pdst) is None):
                 map_cant_paquetes[pkt.pdst] = 0
             map_cant_paquetes[pkt.pdst] += 1
