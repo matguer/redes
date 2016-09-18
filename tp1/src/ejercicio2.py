@@ -84,12 +84,12 @@ def fuente(map_cant_paquetes, args):
 
     for (src, informacion) in info:
         if (args.tabla):
-            print src + " & " + str(informacion) + " & " + (u"Sí" if informacion < entropia_s else "No") + " \\\\"
+            print src + " & " + "%.2f" % informacion + " & " + (u"Sí" if informacion < entropia_s else "No") + " \\\\"
             print "\hline"
         else:
             print u"Información (" + src + ") = " + str(informacion) + " bits." + ("[Distinguido]" if informacion < entropia_s else "")
     if (args.tabla):
-        print u"\par Entropía de la fuente: " + str(entropia_s) + u". Entropía máxima: " + str(log(len(map_cant_paquetes.keys()), 2)) + " bits."
+        print u"\par Entropía de la fuente: " + "%.2f" % entropia_s + u". Entropía máxima: " + "%.2f" % log(len(map_cant_paquetes.keys()), 2) + " bits."
     else:
         print u"Entropía (S_1) = " + str(entropia_s) + " bits."
 
