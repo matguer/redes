@@ -12,12 +12,11 @@ TYPE_FIELD = 'type'
 TYPE_ARP = '0x806'
 WHO_HAS = 1
 
-def ej2(packets, figuraFile, grafoFile, colapsar):
+def ej2(packets, figuraFile, grafoFile, switches):
 
     paquetes_map = {}
     paquetes_map_inv = {}
     map_cant_paquetes = {}
-    cant_paquetes = 0
 
     for pkt in packets:
         # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
@@ -29,14 +28,12 @@ def ej2(packets, figuraFile, grafoFile, colapsar):
                     if (paquetes_map_inv.get(pkt.pdst) is None):
                         paquetes_map_inv[pkt.pdst] = 0
                     paquetes_map_inv[pkt.pdst] += 1
-                    #
-                    if (map_cant_paquetes.get(pkt.psrc) is None):
-                        map_cant_paquetes[pkt.psrc] = 0
-                    map_cant_paquetes[pkt.psrc] += 1
-                    cant_paquetes += 1
+                    sumarCant(map_cant_paquetes, pkt, switches)
+                elif (switches["repetidos"]):
+                    sumarCant(map_cant_paquetes, pkt, switches)
 
-    info, entropia_s = fuente(map_cant_paquetes, cant_paquetes)
-    if (colapsar):
+    info, entropia_s = fuente(map_cant_paquetes)
+    if (switches["colapsar"]):
         paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
 
     graficar(info, entropia_s, figuraFile)
@@ -70,10 +67,11 @@ def filtrar(paquetes_map, paquetes_map_inv):
             paquetes_map_nuevo[k + "+" + str(count) if count > 0 else k] = v
     return paquetes_map_nuevo
 
-def fuente(map_cant_paquetes, cant_paquetes):
+def fuente(map_cant_paquetes):
 
     entropia_s = 0
     info = []
+    cant_paquetes = sum(map_cant_paquetes.values())
     for src, cantidad in map_cant_paquetes.iteritems():
 
         probabilidad = float(cantidad) / cant_paquetes
@@ -89,3 +87,13 @@ def fuente(map_cant_paquetes, cant_paquetes):
 
     info = zip(*info)[1]
     return (info, entropia_s)
+
+def sumarCant(map_cant_paquetes, pkt, switches):
+    if (pkt.psrc != pkt.pdst):
+        if (map_cant_paquetes.get(pkt.psrc) is None):
+            map_cant_paquetes[pkt.psrc] = 0
+        map_cant_paquetes[pkt.psrc] += 1
+        if (switches["ambos"]):
+            if (map_cant_paquetes.get(pkt.pdst) is None):
+                map_cant_paquetes[pkt.pdst] = 0
+            map_cant_paquetes[pkt.pdst] += 1
