@@ -1,53 +1,107 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from scapy.all import *
 from math import log
-#from grafo import grafo
-from graficar import graficar
+from grafo import grafo
+#from graficar import graficar
 
 BROADCAST_DST = 'ff:ff:ff:ff:ff:ff'
 BROADCAST = 'broadcast'
 UNICAST = 'unicast'
 TYPE_FIELD = 'type'
 TYPE_ARP = '0x806'
+WHO_HAS = 1
 
-def insertOrIncrement(dic, key):
-    if key in dic:
-        dic[key] += 1
-    else:
-        dic[key] = 1
-
-def ej2(packets, figuraFile):
+def ej2(packets, args):
 
     paquetes_map = {}
-    cant_paquetes = 0
+    paquetes_map_inv = {}
+    map_cant_paquetes = {}
 
     for pkt in packets:
         # Si es un paquete ARP va a tener el campo TYPE_FIELD y su valor va a ser TYPE_ARP
-        # Aca estamos contando la cantidad de apariciones de cada nodo, tenemos que definir bien
-        # que data queremos guardar y que significa para nosotros un nodo distinguido
         if TYPE_FIELD in pkt.fields:
             type_str = str(hex(pkt.fields[TYPE_FIELD]))
-            if(type_str == TYPE_ARP):
-                #solo destino, eso es lo que va a distinguir a los nodos (source deberia ser basicamente equiprobable)
-                paquetes_map.setdefault(pkt.pdst, []).append(pkt.src)
-                cant_paquetes += 1
+            if(type_str == TYPE_ARP and pkt.op == WHO_HAS):
+                if ((pkt.psrc not in paquetes_map) or (pkt.pdst not in paquetes_map.get(pkt.psrc))):
+                    paquetes_map.setdefault(pkt.psrc, []).append(pkt.pdst)
+                    if (paquetes_map_inv.get(pkt.pdst) is None):
+                        paquetes_map_inv[pkt.pdst] = 0
+                    paquetes_map_inv[pkt.pdst] += 1
+                    sumarCant(map_cant_paquetes, pkt, args)
+                elif (args.repetidos):
+                    sumarCant(map_cant_paquetes, pkt, args)
+
+    info, entropia_s = fuente(map_cant_paquetes, args)
+    if (args.colapsar):
+        paquetes_map = filtrar(paquetes_map, paquetes_map_inv)
+
+    #graficar(info, entropia_s, args.figuraFile)
+    grafo(paquetes_map, args.grafoFile)
+
+def filtrar(paquetes_map, paquetes_map_inv):
+
+    paquetes_map_nuevo = {}
+    for src in paquetes_map.iterkeys():
+        paquetes_map_nuevo[src] = []
+        listaNueva = filter(lambda s: paquetes_map_inv[s] > 1, paquetes_map[src])
+        unicoSrc = filter(lambda s: paquetes_map_inv[s] <= 1, paquetes_map[src])
+        if (len(unicoSrc) > 1):
+            listaNueva.append(unicoSrc[0] + "+" + str(len(unicoSrc) - 1))
+        elif unicoSrc:
+            listaNueva.append(unicoSrc[0])
+        paquetes_map_nuevo[src] = listaNueva
+    paquetes_map = paquetes_map_nuevo
+
+    paquetes_map_nuevo = {}
+    bitmap = {k: False for k in paquetes_map.iterkeys()}
+    for (k, v) in paquetes_map.iteritems():
+        if (bitmap[k] == False):
+            count = 0
+            bitmap[k] = True
+            for (kPrima, vPrima) in paquetes_map.iteritems():
+                if (bitmap[kPrima] == False) and (k != kPrima) and (v == vPrima):
+                    bitmap[kPrima] = True
+                    count += 1
+
+            paquetes_map_nuevo[k + "+" + str(count) if count > 0 else k] = v
+    return paquetes_map_nuevo
+
+def fuente(map_cant_paquetes, args):
 
     entropia_s = 0
-    info = {}
-    for dst, listaSrc in paquetes_map.iteritems():
+    info = []
+    cant_paquetes = sum(map_cant_paquetes.values())
+    for src, cantidad in map_cant_paquetes.iteritems():
 
-        cantidad = len(listaSrc)
         probabilidad = float(cantidad) / cant_paquetes
         informacion = "inf" if (probabilidad == 0) else (-log(probabilidad,2))
-        info[dst] = informacion
+        info.append((src, informacion))
         entropia_s += 0 if (probabilidad == 0) else probabilidad * informacion
 
-        #print "\n" + dst + ":\n"
-        #print "cantidad de paquetes: " + str(cantidad)
-        #print "probabilidad: " + str(probabilidad)
-        #print "informacion: " + str(informacion) + " bits"
-    #print "entropia_s: " + str(entropia_s) + " bits"
+    info = sorted(info, key = lambda p: p[1], reverse = True)
 
-    #grafo(paquetes_map, grafoFile)
-    graficar(info, entropia_s, figuraFile)
+    for (src, informacion) in info:
+        if (args.tabla):
+            print src + " & " + "%.2f" % informacion + " & " + (u"Sí" if informacion < entropia_s else "No") + " \\\\"
+            print "\hline"
+        else:
+            print u"Información (" + src + ") = " + str(informacion) + " bits." + ("[Distinguido]" if informacion < entropia_s else "")
+    if (args.tabla):
+        print u"\par Entropía de la fuente: " + "%.2f" % entropia_s + u". Entropía máxima: " + "%.2f" % log(len(map_cant_paquetes.keys()), 2) + " bits."
+    else:
+        print u"Entropía (S_1) = " + str(entropia_s) + " bits."
+
+    info = zip(*info)[1]
+    return (info, entropia_s)
+
+def sumarCant(map_cant_paquetes, pkt, args):
+    if (pkt.psrc != pkt.pdst):
+        if (map_cant_paquetes.get(pkt.psrc) is None):
+            map_cant_paquetes[pkt.psrc] = 0
+        map_cant_paquetes[pkt.psrc] += 1
+        if (args.ambos):
+            if (map_cant_paquetes.get(pkt.pdst) is None):
+                map_cant_paquetes[pkt.pdst] = 0
+            map_cant_paquetes[pkt.pdst] += 1

@@ -4,9 +4,6 @@ from numpy import arange
 
 def graficar(info, entropia_s, figuraFile):
 
-    keys = sorted(info, key = info.get, reverse = True)
-    info = [info[k] for k in keys]
-
     infoCompactada, cantidades = [], []
     for i in range(len(info)):
         if i == 0 or info[i] != info[i - 1]:

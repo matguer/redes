@@ -1,62 +1,41 @@
 \section{Desarrollo}
 
-\subsection{Experimento 1}
+\subsection{Fuente $S$}
 
-Descripci\'on del experimiento y de las condiciones del experimento
+\par Definiremos una fuente de memoria nula $S$ en base a los frames de capa de enlace capturados. 
+La fuente consiste en dos mensajes: un frame fue transmitido de forma \textit{broadcast}, o éste fue transmitido de forma \textit{unicast}.
 
-Incluir por lo menos los siguientes gr\'aficos:
+\subsection{Elección de la fuente $S_1$}
 
-\begin{itemize}
-	\item Dada la fuente binaria S, mostrar la cantidad de infomación de cada símbolo comparando con la entropía de la fuente y la entropía máxima
-	\item Dados los paquetes ARP, muestre mediante un grafo, la red de mensajes ARP subyacente
-	\item Dada la fuente S1, mostrar la cantidad de información de cada símbolo comparando con la entropía de la fuente.
-\end{itemize}
+\par Definiremos una fuente de memoria nula $S_1$ en base a las Direcciones IP de los paquetes ARP. 
+Deberemos tomar diversas decisiones para definirla correctamente para poder distinguir los nodos apropiados.
 
-Responder las siguientes preguntas (solo dejar las respuestas):
+\par En primer lugar: debemos elegir si tomar los paquetes \textit{who-has}, \textit{is-at}, o ambos.
+En la mayoría de los casos, un \textit{who-has} será respondido por exactamente un \textit{is-at} correspondiente, a menos que el receptor deseado no pueda recibir el paquete o emitir la respuesta, o que haya dos dispositivos con una misma MAC address que intenten responder a la vez.
+Por ende, la información del \textit{is-at} será redundante con la del \textit{who-has}, a menos que se produzca un error (lo que, de tomar ambos, agregaría errores a las mediciones).
 
-\begin{itemize}
-	\item ¿La entropía de la fuente S es máxima? ¿Que sugiere esto acerca de la red? ¿Está relacionado con el overhead impuesto por la red debido a los protocolos de control (i.e.: ARP)?
-	\item ¿Cómo es el tráVco ARP en la red? ¿Se pueden distinguir nodos? ¿Cuántos? ¿Indica algo la cantidad? ¿Se les puede adjudicar alguna función especíVca? ¿Hay evidencia parcial que sugiera que algún nodo funciona de forma anómala y/o no esperada?
-	\item ¿Existe una correspondencia entre lo que se conoce de la red y los nodos distinguidos detectados por la herramienta? ¿Es posible usar el criterio de distinción propuesto como método para descubrir el/los Default Gateway/s de la red? ¿Es preciso?
-\end{itemize}
+\par Consecuentemente, tomaremos sólo uno.
+Ya que el \textit{who-has} se transmite de forma \textit{broadcast}, mientras que el \textit{is-at}, de forma \textit{unicast}\footnote{Si bien realizaremos las mediciones en modo promiscuo, la presencia de \textit{switches} puede evitar que veamos este tipo de paquetes si no están destinados a nuestro dispositivo, lo que generaría aún más errores en las mediciones.}, tomaremos el primero.
 
-\subsection{Experimento 2}
+\par En segundo lugar, debemos decidir si emplear el origen del \textit{who-has}, su destino, o ambos como el mensaje de la fuente.
+Esta decisión no la tomaremos de antemano, sino que observaremos los grafos resultantes de los experimentos y en base a ellos decidiremos cuál es la opción más acertada.
 
-Descripci\'on del experimiento y de las condiciones del experimento
+\par En último lugar, debemos decidir si permitir mensajes repetidos\footnote{Es decir, si considerar repetidas veces múltiples paquetes ARP con igual origen y destino.}. 
+Si bien esto no es ilógico desde el punto de vista del modelo de fuente de memoria nula planteado, los paquetes ARP repetidos no deberían ser necesarios: una vez que se envía un \textit{who-has} por una cierta dirección IP y éste es respondido por un \textit{is-at}, la relación entre esta dirección y la MAC address provista debería persistirse en una tabla del emisor; paquetes repetidos podrían ser síntomas de que el \textit{who-has} original no tuvo respuesta, por lo que otros posteriores fueron requeridos.
 
-Incluir por lo menos los siguientes gr\'aficos:
+\par Creemos que por esta razón no deberíamos considerar paquetes repetidos, pero de todas formas juzgaremos ambos procedimientos en base a los resultados de los experimentos.
 
-\begin{itemize}
-	\item Dada la fuente binaria S, mostrar la cantidad de infomación de cada símbolo comparando con la entropía de la fuente y la entropía máxima
-	\item Dados los paquetes ARP, muestre mediante un grafo, la red de mensajes ARP subyacente
-	\item Dada la fuente S1, mostrar la cantidad de información de cada símbolo comparando con la entropía de la fuente.
-\end{itemize}
+\par Los grafos que emplearemos para representar la red subyacente de mensajes ARP serán independientes de las elecciones que tomemos respecto de la fuente.
+En particular, éstos consistirán en digrafos con loops\footnote{Como mencionamos en la Introducción, en un \textit{gratuitous ARP}, $\text{\textit{Sender's Protocol Address}} = \text{\textit{Target Protocol Address}}$. Para poder observar este fenómeno en el grafo, permitiremos loops.}, donde hay un eje de un nodo a otro si el primero emite un \textit{who-has} preguntando por la Dirección IP del segundo.
+ 
+\newpage
+\subsection{Experimento 1: red inalámbrica de los laboratorios del DC}
+\input{experimento1.tex}
 
-Responder las siguientes preguntas (solo dejar las respuestas):
+\newpage
+\subsection{Experimento 2: red de oficina de trabajo}
+\input{experimento2.tex}
 
-\begin{itemize}
-	\item ¿La entropía de la fuente S es máxima? ¿Que sugiere esto acerca de la red? ¿Está relacionado con el overhead impuesto por la red debido a los protocolos de control (i.e.: ARP)?
-	\item ¿Cómo es el tráVco ARP en la red? ¿Se pueden distinguir nodos? ¿Cuántos? ¿Indica algo la cantidad? ¿Se les puede adjudicar alguna función especíVca? ¿Hay evidencia parcial que sugiera que algún nodo funciona de forma anómala y/o no esperada?
-	\item ¿Existe una correspondencia entre lo que se conoce de la red y los nodos distinguidos detectados por la herramienta? ¿Es posible usar el criterio de distinción propuesto como método para descubrir el/los Default Gateway/s de la red? ¿Es preciso?
-\end{itemize}
-
-
+\newpage
 \subsection{Experimento 3}
-
-Descripci\'on del experimiento y de las condiciones del experimento
-
-Incluir por lo menos los siguientes gr\'aficos:
-
-\begin{itemize}
-	\item Dada la fuente binaria S, mostrar la cantidad de infomación de cada símbolo comparando con la entropía de la fuente y la entropía máxima
-	\item Dados los paquetes ARP, muestre mediante un grafo, la red de mensajes ARP subyacente
-	\item Dada la fuente S1, mostrar la cantidad de información de cada símbolo comparando con la entropía de la fuente.
-\end{itemize}
-
-Responder las siguientes preguntas (solo dejar las respuestas):
-
-\begin{itemize}
-	\item ¿La entropía de la fuente S es máxima? ¿Que sugiere esto acerca de la red? ¿Está relacionado con el overhead impuesto por la red debido a los protocolos de control (i.e.: ARP)?
-	\item ¿Cómo es el tráVco ARP en la red? ¿Se pueden distinguir nodos? ¿Cuántos? ¿Indica algo la cantidad? ¿Se les puede adjudicar alguna función especíVca? ¿Hay evidencia parcial que sugiera que algún nodo funciona de forma anómala y/o no esperada?
-	\item ¿Existe una correspondencia entre lo que se conoce de la red y los nodos distinguidos detectados por la herramienta? ¿Es posible usar el criterio de distinción propuesto como método para descubrir el/los Default Gateway/s de la red? ¿Es preciso?
-\end{itemize}
+\input{experimento3.tex}
