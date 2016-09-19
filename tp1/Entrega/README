@@ -1,0 +1,11 @@
+El archivo a ejecutar para correr los experimentos es sniff.py.
+El primer parámetro que se le debe pasar es el número de ejercicio cuyos experimentos se quieren realizar.
+El segundo es "sniff" o "pcap", para determinar si realizar los experimentos a partir de un sniff o de un archivo pcap (el sniff corre hasta que se lo interrumpe con un KeyboardInterrupt).
+El tercero es el archivo a levantar (o escribir si se pasó sniff).
+Finalmente, un parámetro opcional que devuelve el grafo de la red (se usa un nombre default en caso de no detallarlo).
+
+Adicionalmente hay diversos switches que especifican la fuente S1 (el default es sin paquetes repetidos y tomando sólo psrc).
+
+Un ejemplo de uso del programa es: "python sniff.py 2 pcap Capturas/captura_laburo.pcap --ambos"
+
+Si esta información no es suficiente, remitirse a "python sniff.py -h".
