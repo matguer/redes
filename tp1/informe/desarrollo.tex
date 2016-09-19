@@ -25,17 +25,20 @@ Si bien esto no es ilógico desde el punto de vista del modelo de fuente de memo
 
 \par Creemos que por esta razón no deberíamos considerar paquetes repetidos, pero de todas formas juzgaremos ambos procedimientos en base a los resultados de los experimentos.
 
+\par Descartaremos paquetes correspondientes a \textit{gratuitous ARPs} y \textit{ARP probings}, ya que sus características son anómalas y no nos ayudarán a distinguir nodos.
+
+\par Definimos a un nodo $p$ como \textbf{distinguido} si:
+
+\begin{equation*}
+    I(p) < H(S_1)
+\end{equation*}
+
 \par Los grafos que emplearemos para representar la red subyacente de mensajes ARP serán independientes de las elecciones que tomemos respecto de la fuente.
 En particular, éstos consistirán en digrafos con loops\footnote{Como mencionamos en la Introducción, en un \textit{gratuitous ARP}, $\text{\textit{Sender's Protocol Address}} = \text{\textit{Target Protocol Address}}$. Para poder observar este fenómeno en el grafo, permitiremos loops.}, donde hay un eje de un nodo a otro si el primero emite un \textit{who-has} preguntando por la Dirección IP del segundo.
  
-\newpage
 \subsection{Experimento 1: red inalámbrica de los laboratorios del DC}
 \input{experimento1.tex}
-
-\newpage
 \subsection{Experimento 2: red de oficina de trabajo}
 \input{experimento2.tex}
-
-\newpage
 \subsection{Experimento 3}
 \input{experimento3.tex}
