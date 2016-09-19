@@ -6,6 +6,7 @@
 Esto se evidencia en el hecho de que la transmisión \textit{broadcast} era significativamente más probable en la red de trabajo que en la de los laboratorios del DC, a pesar de que la primera era más chica que la segunda.
 
 \par Observamos que la entropía incrementa al aumentar el tamaño de la red, pero cabe destacar que el grado de interconexión de los nodos nuevamente juega un papel importante.
+Esto es de esperar, ya que la fuente de máxima entropía es una en el que todo mensaje es equiprobable; su grafo de ARP sería un grafo completo\footnote{Es decir, al incrementar la interconexión de los nodos, más se acerca a una fuente equiprobable de entropía máxima.}.
 
 \par Los resultados al contemplar mensajes repetidos para la fuente $S_1$ fueron extremadamente pobres, con un muy alto grado de resultados erróneos, al punto que los nodos distinguidos no eran representativos de ninguna propiedad de la red.
 Por otro lado, tanto al incluir al destino de los paquetes ARP en la fuente como al no incluirlo, se obtuvieron resultados muy cercanos a lo buscado.
@@ -14,8 +15,10 @@ Por otro lado, tanto al incluir al destino de los paquetes ARP en la fuente como
 Utilizar ambos distingue ciertos nodos destacados que no lo fueron por la otra fuente, sin embargo la mayor entropía que presenta lleva a que nodos no destacados sean clasificados positivamente.
 
 \par Es decir, tomar sólo el origen causa más falsos negativos, mientras que tomar ambos causa más falsos negativos. 
-La magnitud de estos errores de clasificación probó ser pequeña en nuestros experimentos, por lo que no recomendamos una por sobre la otra; concluimos que la decisión de fuente debería realizarse en base a cuál de estos dos errores se considere más leve. 
+La diferencia de errores de clasificación entre ambas fuentes probó ser pequeña en nuestros experimentos, por lo que no recomendamos una por sobre la otra; concluimos que la decisión de fuente debería realizarse en base a cuál de estos dos errores se considere más leve. 
+
+\par Los resultados fueron satisfactorios para redes con una entropía en relación al tamaño relativamente baja\footnote{Es decir, cuyo grafo de ARP es relativamente esparso, como en el caso de los experimentos 1 y 3.}, mientras que al aumentar esta magnitud se tornaron menos aceptables.
 
 \par Las topologías de las redes modeladas a partir de los paquetes ARP se exhibieron sumamente diferentes.
-En particular, la red de los laboratorios del DC se mostró fragmentada, con las diversas componentes conexas presentando en la mayoría de los casos una estructura de estrella o similar; la red del trabajo se manifestó conexa, con un grado de interconexión mucho más alto.
+En particular, la red de los laboratorios del DC se mostró fragmentada, con las diversas componentes conexas presentando en la mayoría de los casos una estructura de estrella o similar; la red del trabajo se manifestó conexa con la excepción de dos nodos, con un grado de interconexión mucho más alto.
 Esta diferencia debe estar relacionada a la distinta función de las redes: la del DC busca brindar una conexión de internet a los diversos visitantes de los laboratorios, que buscarán acceder direcciones mayoritariamente fuera de la red; la del trabajo busca reunir además diversos dispositivos interdependientes.

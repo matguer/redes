@@ -52,4 +52,101 @@ Por lo tanto, al analizar los paquetes que provenían de estos nodos en modo bro
 		En este caso, se trata de mensajes emitidos por impresoras que eventualmente podr\'ian querer informar sus status a todos los nodos.
 \end{itemize}
 
-Por lo tanto, podemos conclu\'ir aqu\'i que se trata de paquetes para control pero no de la red en si misma, sino de protocolos propios de ciertos nodos.
+Por lo tanto, podemos concluir aqu\'i que se trata de paquetes para control pero no de la red en si misma, sino de protocolos propios de ciertos nodos.
+
+\subsubsection{Estructura de la red en base a los paquetes ARP}
+
+\par En la figura \ref{ARPlaburo} se puede ver el grafo de la red subyacente de mensajes ARP.
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figuras/laburo_grafo.pdf}
+    \caption{Grafo de la red subyacente de mensajes ARP en el experimento 2.}\label{ARPlaburo}
+\end{figure*}
+
+\par Las direcciones IP de la red son de la forma 192.168.1.X, con ciertas excepciones: se observa la dirección 0.0.0.0 y la 169.254.255.255, ambas detalladas en el experimento previo; vemos dos nodos con las direcciones 192.9.200.100 y 192.9.200.1.
+Adicionalmente, éstos son los únicos dos nodos que no están conectados al resto de la red.
+Este comportamiento es anómalo, por lo que creemos que son IPs con un uso particular, específico a la red, ya que no parecen ser reservadas.
+
+\par En el grafo se destaca claramente un nodo, el 192.168.1.1, cuyo comportamiento es consistente con lo esperado de un router\footnote{Es común que los routers ocupen la última o primera, como en este caso, dirección de la red.}.
+Luego vemos un grupo de vertices con un muy alto grado de entrada y salida; sin embargo, no parecen actuar como Default Gateways.
+
+\subsubsection{Fuente $S_1$}
+
+\par En la tabla \ref{tab2SinRSinA} podemos ver la información de ciertos mensajes de la fuente $S_1$, sin paquetes repetidos y tomando sólo el \textit{Sender's Protocol Address} de los paquetes.
+
+\par La entropía de la fuente es de 4.61 bits, siendo la máxima 32 bits. 
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{ | c | c | c | l |}
+        \hline
+        Mensaje & Información [bits] & Distinguido?\\
+        \hline
+192.168.1.1 & 4.86 & No \\
+\hline
+192.168.1.194 & 4.50 & Sí \\
+\hline
+192.168.1.127 & 4.50 & Sí \\
+\hline
+192.168.1.90 & 4.34 & Sí \\
+\hline
+192.168.1.99 & 4.34 & Sí \\
+\hline
+192.168.1.121 & 4.34 & Sí \\
+\hline
+192.168.1.158 & 4.21 & Sí \\
+\hline
+192.168.1.205 & 4.08 & Sí \\
+\hline
+192.168.1.117 & 3.34 & Sí \\
+\hline
+192.168.1.235 & 2.96 & Sí \\
+\hline
+    \end{tabular} 
+    \caption{Información de los nodos de la fuente $S_1$ en el experimento 2, sin tomar paquetes repetidos y considerando como mensaje la ocurrencia de una IP en el campo \textit{Sender's Protocol Address} de un paquete ARP \textit{who-has}.}
+    \label{tab2SinRSinA}
+\end{table} 
+
+\par El resultado es el opuesto al esperado: los nodos distinguidos son los pertenecientes al grupo de vértices mencionado con alto grado de interconexión pero sin comportamiento de router, mientras que el nodo efectivamente identificado como Default Gateway no es distinguido.
+
+\par En la tabla \ref{tab2A} podemos ver la información de ciertos mensajes de la fuente $S_1$, sin paquetes repetidos y tomando tanto el \textit{Sender's Protocol Address} como el \textit{Target Protocol Address} de los paquetes.
+
+\begin{table}[t]
+    \centering
+    \begin{tabular}{ | c | c | c | l |}
+        \hline
+        Mensaje & Información [bits] & Distinguido?\\
+\hline
+192.168.1.194 & 4.86 & Sí \\
+\hline
+192.168.1.90 & 4.76 & Sí \\
+\hline
+192.168.1.99 & 4.67 & Sí \\
+\hline
+192.168.1.120 & 4.67 & Sí \\
+\hline
+192.168.1.121 & 4.67 & Sí \\
+\hline
+192.168.1.127 & 4.67 & Sí \\
+\hline
+192.168.1.170 & 4.50 & Sí \\
+\hline
+192.168.1.205 & 4.34 & Sí \\
+\hline
+192.168.1.158 & 4.08 & Sí \\
+\hline
+192.168.1.1 & 3.86 & Sí \\
+\hline
+192.168.1.117 & 3.58 & Sí \\
+\hline
+192.168.1.235 & 3.24 & Sí \\
+\hline
+    \end{tabular} 
+    \caption{Información de los nodos de la fuente $S_1$ en el experimento 2, sin tomar paquetes repetidos y considerando como mensaje la ocurrencia de una IP tanto en el campo \textit{Sender's Protocol Address} como en el \textit{Target Protocol Address} de un paquete ARP \textit{who-has}.}
+    \label{tab2A}
+\end{table} 
+
+\par La entropía de la fuente es de 4.93 bits, siendo la máxima 32 bits. 
+
+\par Nuevamente se presentan los falsos positivos, pero el nodo que identificamos como router se considera ahora distinguido.
