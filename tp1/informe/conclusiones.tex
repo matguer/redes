@@ -1,10 +1,21 @@
 \section{Conclusiones}
 
-Usar estas preguntas de gu\'ia:
+\par La entropía de la fuente $S$ no resultó la mejor herramienta para juzgar el efecto de los protocolos de control sobre la red, sino las probabilidades de las dos formas de transmisión\footnote{La entropía está dada por las probabilidades, pero esconde cuál forma de transmisión resulta más común; este dato es de suma importancia para el análisis planteado.}.
 
-\begin{itemize}
-	\item De haber diferentes tecnologías entre las redes capturadas, ¿Aprecia alguna diferencia desde el punto de vista de las fuentes de información analizadas?
-	\item De haber diferentes tamaños de redes, ¿Aprecia alguna diferencia desde el punto de vista de las fuentes de información analizadas?
-	\item ¿Que importancia tiene la entropía en la capacidad de detectar símbolos (nodos/hosts) distinguidos?
-	\item ¿Hay alguna relación entre la entropía y la cantidad de nodos (distinguidos y no distinguidos)?
-\end{itemize}
+\par Vimos que dicho efecto no depende exclusivamente del tamaño de la red; el grado de interconexión de los nodos juega un papel fundamental.
+Esto se evidencia en el hecho de que la transmisión \textit{broadcast} era significativamente más probable en la red de trabajo que en la de los laboratorios del DC, a pesar de que la primera era más chica que la segunda.
+
+\par Observamos que la entropía incrementa al aumentar el tamaño de la red, pero cabe destacar que el grado de interconexión de los nodos nuevamente juega un papel importante.
+
+\par Los resultados al contemplar mensajes repetidos para la fuente $S_1$ fueron extremadamente pobres, con un muy alto grado de resultados erróneos, al punto que los nodos distinguidos no eran representativos de ninguna propiedad de la red.
+Por otro lado, tanto al incluir al destino de los paquetes ARP en la fuente como al no incluirlo, se obtuvieron resultados muy cercanos a lo buscado.
+
+\par Ya que la mayoría de los nodos destacados principalmente actúan como emisores de los mensajes ARP, utilizar sólo el origen provee una buena aproximación.
+Utilizar ambos distingue ciertos nodos destacados que no lo fueron por la otra fuente, sin embargo la mayor entropía que presenta lleva a que nodos no destacados sean clasificados positivamente.
+
+\par Es decir, tomar sólo el origen causa más falsos negativos, mientras que tomar ambos causa más falsos negativos. 
+La magnitud de estos errores de clasificación probó ser pequeña en nuestros experimentos, por lo que no recomendamos una por sobre la otra; concluimos que la decisión de fuente debería realizarse en base a cuál de estos dos errores se considere más leve. 
+
+\par Las topologías de las redes modeladas a partir de los paquetes ARP se exhibieron sumamente diferentes.
+En particular, la red de los laboratorios del DC se mostró fragmentada, con las diversas componentes conexas presentando en la mayoría de los casos una estructura de estrella o similar; la red del trabajo se manifestó conexa, con un grado de interconexión mucho más alto.
+Esta diferencia debe estar relacionada a la distinta función de las redes: la del DC busca brindar una conexión de internet a los diversos visitantes de los laboratorios, que buscarán acceder direcciones mayoritariamente fuera de la red; la del trabajo busca reunir además diversos dispositivos interdependientes.

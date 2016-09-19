@@ -19,12 +19,6 @@
 \par Observamos que la entropía de la fuente es menor que la máxima, ya que las transmisiones \textit{unicast} son casi 3 veces más probables que las \textit{broadcast}.
 Esto nos provee una cota inferior para el \textit{overhead} impuesto por los protocolos de control: al menos 22.7\% de los frames no transmiten datos.
 
-\par Ya que no poseemos una idea del comportamiento esperado de esta fuente, no podemos realizar un análisis más detallado sólo a partir de esta fuente.
-Por ende, lo profundizaremos recién en la sección del siguiente experimento, comparando con los resultados obtenidos de esa red.
-%vemos que la entropía y la probabilidad de los frames \textit{broadcast} son significativamente mayores para la fuente $S$ en el experimento 2.
-
-%\par Podemos ver, comparando la estructura de ambas redes (figuras \ref{ARPDC-sinColapsar} y \ref{ARPTrab-sinColapsar}, respectivamente), que la de este experimento es más fragmentaria, mientras que la del 2 posee un mucho mayor grado de interconexión.
-
 \subsubsection{Estructura de la red en base a los paquetes ARP}
 
 \par En las figuras \ref{ARPDC-sinColapsar} y \ref{ARPDC} se pueden ver los grafos\footnote{Ambos grafos representan la misma red. Sin embargo, el tamaño del grafo \ref{ARPDC-sinColapsar} puede dificultar un análisis detallado, por lo que en la figura \ref{ARPDC} colapsamos ciertos nodos con iguales vecinos (que se muestran en rojo). Mantuvimos el grafo original ya que una mirada rápida ofrece más información concerniente a la topología de la red.} de la red subyacente de mensajes ARP.
@@ -161,7 +155,7 @@ Por otro lado, el 0.254 y el 7.254, tienen más vecinos pero varios de éstos pr
 \end{table} 
 
 \par La entropía de la fuente es de 6.28 bits, siendo la máxima 32 bits. 
-Cabe destacar que la entropía es mayor que al tomar sólo el campo de origen. 
+Cabe destacar que la entropía es mayor que la de la fuente previa.
 Muchos paquetes son enviados por un nodo destacado a direcciones que no aparecen nuevamente; la fuente previa sólo cuenta al nodo destacado, que al aparecer múltiples veces provee poca informacion, mientras que esta fuente cuenta también al nodo más raro, cuya información es más alta.
 
 \par Vemos que uno de los falsos negativos que habíamos mencionado, el 7.254, es considerado distinguido en esta nueva fuente.
@@ -239,4 +233,3 @@ Sin embargo, si la intención es que todo nodo destacado sea un Default Gateway,
 \par Los resultados presentan una extrema cantidad de falsos positivos y negativos, por lo que concluimos que esta fuente no sirve para nuestros propósitos.
 
 \par Debido a la mayor entropía y a la menor cantidad de falsos negativos de la fuente sin repetidos y con origen y destino, concluimos que ésta es preferible, al menos en las condiciones de este experimento.
-
